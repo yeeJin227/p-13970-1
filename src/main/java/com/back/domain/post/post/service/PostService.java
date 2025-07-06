@@ -15,7 +15,7 @@ public class PostService {
 
     private final PostRepository postRepository;
 
-
+    // post 관련
     public long count(){
         return postRepository.count();
     }
@@ -37,9 +37,13 @@ public class PostService {
         post.modify(title, content);
     }
 
+    public void delete(Post post) {
+        postRepository.delete(post);
+    }
 
 
 
+    // postComment 관련
     public void writeComment(Post post, String content){
         post.addComment(content);
     }
@@ -51,4 +55,5 @@ public class PostService {
     public boolean deleteComment(Post post, PostComment postComment) {
         return post.deleteComment(postComment);
     }
+
 }
