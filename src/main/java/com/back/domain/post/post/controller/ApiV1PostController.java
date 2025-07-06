@@ -4,12 +4,12 @@ import com.back.domain.post.post.dto.PostDto;
 import com.back.domain.post.post.entity.Post;
 import com.back.domain.post.post.service.PostService;
 import com.back.global.rsData.RsData;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -39,11 +39,60 @@ public class ApiV1PostController {
     }
 
     // post 삭제
-    @GetMapping("/{id}/delete")
+    @DeleteMapping("/{id}")
     @Transactional
-    public RsData<void> delete(@PathVariable int id){
+    public RsData<Void> delete(@PathVariable int id){
         Post post = postService.findById(id).get();
         postService.delete(post);
         return new RsData<>("200-1", "%d번 글이 삭제되었습니다.".formatted(id));
     }
+
+
+    record PostWriteReqBody(
+            @NotBlank
+            @Size(min=2, max=100)
+            String title,
+
+            @NotBlank
+            @Size(min=2, max=5000)
+            String content
+    ){
+
+    }
+
+
+    // post 작성
+    @PostMapping
+    @Transactional
+    public RsData<PostDto> write(@Valid @RequestBody PostWriteReqBody form){
+        Post post = postService.write(form.title, form.content);
+        return new RsData<>("200-1", "%d번 글이 생성되었습니다.".formatted(post.getId()), new PostDto(post));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
