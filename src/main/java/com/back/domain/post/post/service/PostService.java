@@ -44,11 +44,11 @@ public class PostService {
 
 
     // postComment 관련
-    public void writeComment(Post post, String content){
-        post.addComment(content);
+    public PostComment writeComment(Post post, String content){
+        return post.addComment(content);
     }
 
-    public void modifyComment(Post post, PostComment postComment, String content){
+    public void modifyComment(PostComment postComment, String content){
         postComment.modify(content);
     }
 
@@ -56,4 +56,8 @@ public class PostService {
         return post.deleteComment(postComment);
     }
 
+
+    public void flush(){
+        postRepository.flush();
+    }
 }

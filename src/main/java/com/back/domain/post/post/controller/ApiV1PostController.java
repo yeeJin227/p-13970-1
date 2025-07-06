@@ -47,7 +47,7 @@ public class ApiV1PostController {
         return new RsData<>("200-1", "%d번 글이 삭제되었습니다.".formatted(id));
     }
 
-
+    // post 작성
     record PostWriteReqBody(
             @NotBlank
             @Size(min=2, max=100)
@@ -57,42 +57,40 @@ public class ApiV1PostController {
             @Size(min=2, max=5000)
             String content
     ){
-
     }
 
+    record PostWriteResBody(
+            long totalCount,
+            PostDto post
+    ){
+    }
 
-    // post 작성
     @PostMapping
     @Transactional
-    public RsData<PostDto> write(@Valid @RequestBody PostWriteReqBody form){
-        Post post = postService.write(form.title, form.content);
-        return new RsData<>("200-1", "%d번 글이 생성되었습니다.".formatted(post.getId()), new PostDto(post));
+    public RsData<PostWriteResBody> write(@Valid @RequestBody PostWriteReqBody reqBody){
+        Post post = postService.write(reqBody.title, reqBody.content);
+        return new RsData<>("200-1", "%d번 글이 작성되었습니다.".formatted(post.getId()), new PostWriteResBody(postService.count(), new PostDto(post)));
     }
 
 
+    // post 수정
+    record PostModifyReqBody(
+            @NotBlank
+            @Size(min=2, max=100)
+            String title,
 
+            @NotBlank
+            @Size(min=2, max=5000)
+            String content
+    ){
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @PutMapping("/{id}")
+    @Transactional
+    public RsData<Void> modify(@PathVariable int id, @Valid @RequestBody PostModifyReqBody reqBody){
+        Post post = postService.findById(id).get();
+        postService.modify(post,reqBody.title, reqBody.content);
+        return new RsData<>("200-1","%d번 글이 수정되었습니다.".formatted(post.getId()));
+    }
 
 }
