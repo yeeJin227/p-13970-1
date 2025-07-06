@@ -33,7 +33,6 @@ public class ApiV1PostCommentController {
                 .map(PostCommentDto::new)
                 .toList();
     }
-
     // PostComment 단건조회
     @GetMapping("/{id}")
     @Transactional(readOnly = true)
@@ -52,6 +51,7 @@ public class ApiV1PostCommentController {
         postService.deleteComment(post, postComment);
         return new RsData<>("200-1", "댓글이 삭제되었습니다.");
     }
+
 
     // PostComment 작성
     record PostCommentWriteReqBody(
@@ -78,7 +78,6 @@ public class ApiV1PostCommentController {
             String content
     ){
     }
-
     @PutMapping("/{id}")
     @Transactional
     public RsData<Void> modify(@PathVariable int postId, @PathVariable int id, @Valid @RequestBody PostCommentModifyReqBody reqBody){
